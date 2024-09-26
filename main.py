@@ -1,23 +1,22 @@
 from telegram import Update
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import os
 from dotenv import load_dotenv
 
 # load api key  
 load_dotenv()
 
-API_KEY = os.getenv(token='API_KEY')
+api_key = os.getenv('API_KEY')
+application = ApplicationBuilder().token(api_key).build()
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("Welcome, how can I help you Today?")
 
-def start(update, context):
-    update.message.reply_text("Welcome, how can I help you Today?")
 
-def main():
-    updater = Updater(token=API_KEY)
-    dp = updater.dispatcher
-    dp.add_handler(CommandHandler('start', start))
-   # dp.add_handler(MessageHandler(Filters.text, handle_message))
-    updater.start_polling()
-    updater.idle()
+application.add_handler(CommandHandler('start', start))
+    
+    
+   
+    
 
 if __name__ == '__main__':
-    main()
+    application.run_polling()
